@@ -1,0 +1,5 @@
+$componentClass: "bannerText";
+$prefix: $componentClass;
+
+@include new($componentClass) {
+}
