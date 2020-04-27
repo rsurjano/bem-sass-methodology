@@ -9,4 +9,34 @@ $prefix: $componentClass;
   @include has($prefix, $e: "inner") {
     position: relative;
   }
+
+  @include has($prefix, $e: "textContent") {
+    position: absolute;
+    padding: 10px;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    text-align: left;
+    @include screen-sm {
+      left: 0;
+      bottom: auto;
+      min-width: initial;
+      padding: 45px;
+      margin: 20px;
+      text-align: initial;
+      transform: translateX(0);
+    }
+  }
+
+  @include has($prefix, $e: "headline") {
+    display: block;
+
+    @include baseFontStyle(light, normal, 3.5rem, $color: inherit);
+    font-family: $playfair;
+    @include screen-sm {
+      @include baseFontStyle(light, normal, 4.8rem, $color: inherit);
+      font-family: $playfair;
+    }
+  }
 }
