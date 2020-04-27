@@ -39,4 +39,34 @@ $prefix: $componentClass;
       font-family: $playfair;
     }
   }
+
+  @include has($prefix, $e: "subtitle") {
+    display: block;
+    @include baseFontStyle(normal, normal, 2.3rem, $color: inherit);
+    margin-top: 1.5rem;
+    @include screen-sm {
+      @include baseFontStyle(normal, normal, 1.6em, $color: inherit);
+    }
+  }
+
+  @include has($prefix, $e: "ctas") {
+    margin-top: 1rem;
+    font-size: 1.2em;
+    & > * {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  @include has($prefix, $e: "button") {
+    min-width: 150px;
+
+    &.pg-button--link {
+      @include screen-sm {
+        text-align: inherit;
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+  }
 }
