@@ -1,0 +1,192 @@
+$namespace: "demo-";
+
+// COLORS
+$grey-1: #9b9b9b;
+$grey-2: #8b8b8b;
+$grey-3: #757575;
+$grey-4: #4b4b4b;
+$grey-5: #f7f7f8;
+$grey-6: #dfe0e1;
+
+$black-1: #2c2c2c;
+$black-2: #111111;
+
+$white-1: #f1f1f2;
+$white-2: #dfe0e1;
+$white-3: #bababa;
+
+$pink-1: #f4dbd3;
+
+$olive-1: #8b572a;
+$olive-2: #6c5936;
+
+$blue-1: #527092;
+$blue-2: #2f678b;
+$blue-3: #2b4869;
+
+$yellow-1: #faf5b2;
+
+$red-1: #d0021b;
+
+// Z-INDEX
+$banner-base-z-index: 10;
+
+//------------- LAYOUT --------------//
+
+$enable-caret: true !default;
+$enable-rounded: true !default;
+$enable-shadows: false !default;
+$enable-gradients: false !default;
+$enable-transitions: true !default;
+$enable-hover-media-query: false !default;
+$enable-grid-classes: true !default;
+$enable-print-styles: true !default;
+
+// Set a specific jump point for requesting color jumps
+$theme-color-interval: 8% !default;
+
+// css
+$transition-very-fast: 0.1s;
+$transition-fast: 0.3s;
+
+// typography
+$base-font-size: 16px;
+$brandon: Arial;
+$playfair: Arial;
+$iconfont: "FontAwesome";
+
+$primary-font: $brandon;
+$secondary-font: $playfair;
+$font-icon: $iconfont;
+
+$font-weights: (
+  extralight: 100,
+  thin: 100,
+  light: 200,
+  book: 300,
+  regular: 400,
+  normal: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  black: 800,
+  extrablack: 900
+);
+
+// padding/margin
+$base-padding: 20px;
+$base-margin: 20px;
+
+// media queries
+// EP: As we don't have a clear style for tablet's portrait Viewport
+// I believed that's something we can cover in the future, for the moment,
+// everything's smartphone size
+
+$media-sz0-min: 480px; // xs
+$media-sz1-min: 769px; // sm
+$media-sz2-min: 992px; // md
+$media-sz3-min: 1200px; // lg
+$media-sz4-min: 1400px; // xl
+
+//  used for Design calculations
+$media-mobile: $media-sz2-min; // 992px;
+$media-desktop: $media-sz4-min; // 1400px
+
+$line-height-lg: 1.5 !default;
+$line-height-sm: 1.5 !default;
+
+$border-width: 1px !default;
+$border-color: $grey-1 !default;
+
+$border-radius: 0.25rem !default;
+$border-radius-lg: 0.3rem !default;
+
+$theme-colors: (
+  "grey-1": $grey-1,
+  "grey-2": $grey-2,
+  "grey-3": $grey-3,
+  "grey-4": $grey-4,
+  "black-1": $black-1,
+  "black-2": $black-2,
+  "white-1": $white-1,
+  "white-2": $white-2,
+  "white-3": $white-3,
+  "pink-1": $pink-1,
+  "olive-1": $olive-1,
+  "olive-2": $olive-2,
+  "blue-1": $blue-1,
+  "blue-2": $blue-2,
+  "blue-3": $blue-3,
+  "yellow-1": $yellow-1,
+  "red-1": $red-1
+);
+//------------- ELEMENTS --------------//
+
+//------------- COMPONENTS --------------//
+
+//------------- MIXINS --------------//
+
+// BUTTONS
+$button-border-color: #dfe0e1;
+$button-border-color-hover: $button-border-color;
+$button-border-color-active: $button-border-color;
+$button-border-color-disabled: $button-border-color;
+$button-border-style: solid;
+$button-border-width: 1px;
+$button-color: $black-1;
+$button-active: $black-2;
+$button-disabled: $black-2;
+$button-hover: $black-2;
+$button-bgcolor: #ffffff;
+$button-bgcolor-active: $button-bgcolor;
+$button-bgcolor-disabled: $button-bgcolor;
+$button-bgcolor-hover: $button-bgcolor;
+$button-background-color: #ffffff;
+$button-border-size: 1px !important;
+$button-display: inline-block;
+$button-font-size: 14px;
+$button-outline: false;
+$button-padding: 15px 30px;
+$button-radius: 0;
+$button-width: auto;
+
+$button-mobile-font-size: 11px;
+
+$button-primary-text-color: white !default;
+$button-primary-bg-color: $black-2 !default;
+$button-primary-border-color: $black-2 !default;
+$button-primary-hover-text-color: white !default;
+$button-primary-hover-bg-color: $black-1 !default;
+$button-primary-hover-border-color: $grey-2 !default;
+$button-primary-selected-bg-color: $black-1 !default;
+$button-primary-selected-text-color: white !default;
+
+$button-secondary-text-color: $grey-4 !default;
+$button-secondary-bg-color: white !default;
+$button-secondary-border-color: $white-2 !default;
+$button-secondary-hover-text-color: $black-2 !default;
+$button-secondary-hover-bg-color: white !default;
+$button-secondary-hover-border-color: $grey-2 !default;
+$button-secondary-selected-bg-color: $white-1 !default;
+$button-secondary-selected-text-color: $grey-4 !default;
+
+$button-tertiary-text-color: $grey-4 !default;
+$button-tertiary-bg-color: $white-1 !default;
+$button-tertiary-border-color: $white-2 !default;
+$button-tertiary-hover-text-color: $black-2 !default;
+$button-tertiary-hover-bg-color: $white-2 !default;
+$button-tertiary-hover-border-color: $grey-2 !default;
+$button-tertiary-selected-bg-color: $white-2 !default;
+$button-tertiary-selected-text-color: $grey-4 !default;
+
+// LINKS
+
+$link-color: $black-2;
+$link-background-color: transparent;
+
+// LAYOUT
+
+$layout-content-block-width: full;
+$layout-content-block-inset: none;
+$layout-content-block-padding: 20px;
+$layout-content-max-width: 1400px;

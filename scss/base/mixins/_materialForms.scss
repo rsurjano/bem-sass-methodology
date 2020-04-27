@@ -1,0 +1,165 @@
+// based on
+// https://scotch.io/tutorials/google-material-design-input-boxes-in-css3
+
+@mixin materialForms() {
+  $primary-font-size: rem(16px);
+  $secondary-font-size: rem(12px);
+  $active-color: #111111;
+  $pasive-color: #757575;
+
+  .#{$namespace}material-form{
+
+    .#{$namespace}material-group{
+      position: relative;
+      // margin-bottom: 3.5rem;
+
+      // customization
+      &.completed{
+        input:focus ~ label, input:valid ~ label {
+          font-weight: getMapValues($font-weights, bold);
+          color: #757575;
+        }
+      }
+
+      &.required{
+        input{
+          border-bottom-color: $red-1;
+          color: $red-1;
+        }
+        > label {
+          color: $red-1;
+        }
+
+        select {
+          border-color: $red-1;
+        }
+
+      }
+      .required{
+        @include baseFontStyle(bold, normal, 8px, $color: $red-1);
+
+        position: absolute;
+        right: 0;
+        bottom: -15px;
+      }
+    }
+
+    input {
+      border: none;
+      border-bottom: 1px solid #757575;
+      display: block;
+      font-size: $primary-font-size;
+      padding: 10px 10px 10px 0;
+      width:  100%;
+
+      &:focus{
+        outline: none;
+      }
+
+      // &[disabled] ~ label,
+      // &[readonly] ~ label {
+      //   display: none;
+      // }
+    }
+
+    // LABEL
+    label {
+      color: $pasive-color;
+      font-size: $primary-font-size;
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      top: 10px;
+      transition: 0.2s ease all;
+
+      // customization
+      font-weight: getMapValues($font-weights, light);
+      font-style: italic;
+      text-transform: capitalize;
+
+      &.static{
+        position: static;
+        top: auto;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+    }
+
+    // ACTIVE STATE
+    input:focus ~ label,
+    input:valid ~ label,
+    input:disabled ~ label {
+      top: -11px;
+      font-size: $secondary-font-size;
+      color: #757575;
+
+      // customization
+      font-style: normal;
+      text-transform: uppercase;
+    }
+
+    input[type=checkbox]:focus ~ label,
+    input[type=checkbox]:valid ~ label,
+    input[type=checkbox]:disabled ~ label,
+    input[type=radio]:focus ~ label,
+    input[type=radio]:valid ~ label,
+    input[type=radio]:disabled ~ label {
+      top: 0;
+      position: initial;
+    }
+
+    input:focus ~ .bar:before, input:focus ~ .bar:after {
+      width:50%;
+    }
+
+    // BOTTOM BARS
+    .bar {
+      position: relative;
+      display: block;
+      width: 100%;
+      &:before,
+      &:after {
+        content:'';
+        height: 1px;
+        width: 0;
+        bottom: 1px;
+        position: absolute;
+        background:  $pasive-color;
+        transition: 0.2s ease all;
+      }
+      &:before {
+        left:50%;
+      }
+      &:after {
+        right:50%;
+      }
+
+      // customization
+      display: none;
+    }
+
+    // HIGHLIGHTER
+    .highlight {
+      position: absolute;
+      height: 60%;
+      width:  100%;
+      top: 25%;
+      left: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* active state */
+    input:focus ~ .highlight {
+      animation:inputHighlighter 0.3s ease;
+    }
+
+    // ANIMATION
+    @keyframes inputHighlighter {
+      from { background: $pasive-color; }
+      to { width:0; background:transparent; }
+    }
+
+  }
+
+}

@@ -1,0 +1,56 @@
+//
+//  SCSS mixins for handling media queries
+//
+//  media-sz1-min: 768px; sm
+//  media-sz2-min: 992px; md
+//  media-sz3-min: 1200px; lg
+//  media-sz4-min: 1400px; xl
+//
+
+@mixin screen-xs() {
+  @media ( min-width: $media-sz0-min) { @content; }
+}
+
+@mixin screen-sm() {
+  @media ( min-width: $media-sz1-min) { @content; }
+}
+
+@mixin screen-sm-max() {
+  @media ( max-width: $media-sz1-min - 1px) { @content; }
+}
+
+@mixin screen-md () {
+  @media ( min-width: $media-sz2-min) { @content; }
+}
+
+@mixin screen-md-max () {
+  @media ( max-width: $media-sz2-min - 1px) { @content; }
+}
+
+@mixin screen-breakpoint() {
+  @media ( min-width: $media-sz3-min) { @content; }
+}
+
+@mixin screen-breakpoint-max() {
+  @media ( max-width: $media-sz3-min - 1px) { @content; }
+}
+
+@mixin screen-lg () {
+  @media ( min-width: $media-sz3-min) { @content; }
+}
+
+@mixin screen-lg-max () {
+  @media ( max-width: $media-sz3-min - 1px) { @content; }
+}
+
+@mixin screen-xl () {
+  @media ( min-width: $media-sz4-min) { @content; }
+}
+
+@mixin screen-xl-max () {
+  @media ( max-width: $media-sz4-min) { @content; }
+}
+
+@mixin screen-print-only () {
+  @media print and (color)  { @content; }
+}

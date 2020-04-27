@@ -1,0 +1,113 @@
+//
+// SCSS variables for managing SVG icons
+//
+// The SVG element should be a single compound path
+// so, the following SVG structure is assumed:
+//
+// <svg xmlns="http://www.w3.org/2000/svg" viewBox="...">
+//  <path d="..."/>
+// </svg>
+//
+// Adobe Illustrator's "compound paths" combine all selected paths into one.
+// [ Select Object > Compound Path > Make ]
+//
+// That SVG structure should be optimized here:
+// http://petercollingridge.appspot.com/svg-optimiser/
+// and the path attribute "d" and the svg attribute "viewBox" values should being
+// settled as part of the new Scss Map variable like the following example:
+//
+// $svg-icon_icon-name: ( viewBox: svg_viewBox_attribute_value, d: path_d_attribute_value );
+//
+//
+
+// SVG Animations
+//
+// icon_plus_to_minus_small.svg
+// <svg version="1.1" id="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 8 8" style="enable-background:new 0 0 8 8;" xml:space="preserve">
+// <rect id="" y="3.5" width="8" height="1"/>
+// <g id data-animator-group="true" data-animator-type="1"><rect id x="3.5" width="1" height="8"/></g>
+// </svg>
+@mixin icon_plus_to_minus($color: #111111){
+
+  .icon_plus_to_minus{
+    svg {
+
+      @include hover-active-class{
+        g { animation: in .3s forwards; }
+      }
+      @keyframes in{
+          0%{ transform: rotate(0deg); }
+          100%{ transform: rotate(90deg); }
+      }
+      @keyframes out{
+          0%{ transform: rotate(90deg); }
+          100%{ transform: rotate(0deg); }
+      }
+      > rect { fill: $color; }
+      g > rect{ fill: $color; }
+      g{
+        animation: out .3s forwards;
+        transform-origin: 50% 50%;
+        transform-box: fill-box;
+        transform: rotate(0deg);
+      }
+    }
+  }//end
+}
+
+// <svg id="B1McmMtTz" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><style>@-webkit-keyframes SJlf57fYaf_BJUoXzYpM_Animation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes SJlf57fYaf_BJUoXzYpM_Animation{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}#B1McmMtTz *{-webkit-animation-duration:.7s;animation-duration:.7s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-timing-function:cubic-bezier(0,0,1,1);animation-timing-function:cubic-bezier(0,0,1,1)}</style><g data-animator-group="true" data-animator-type="1" style="-webkit-animation-name:SJlf57fYaf_BJUoXzYpM_Animation;animation-name:SJlf57fYaf_BJUoXzYpM_Animation;-webkit-transform-origin:50% 50%;transform-origin:50% 50%;transform-box:fill-box;-webkit-transform:rotate(0deg);transform:rotate(0deg);-webkit-animation-timing-function:cubic-bezier(.42,0,.58,1);animation-timing-function:cubic-bezier(.42,0,.58,1)"><g id="SJlf57fYaf"><path d="M20 40C9 40 0 31 0 20S9 0 20 0s20 9 20 20-9 20-20 20zm0-38C10 2 2 10 2 20s8 18 18 18 18-8.1 18-18c0-10-8-18-18-18z" fill="#dfe0e1"/><path d="M40 20h-2c0-10-8-18-18-18V0c11 0 20 9 20 20z" fill="#111"/></g></g><script>(function(){var a=document.querySelector(&apos;#B1McmMtTz&apos;),b=a.querySelectorAll(&apos;style&apos;),c=function(d){b.forEach(function(f){var g=f.textContent;g&amp;&amp;(f.textContent=g.replace(/transform-box:[^;\r\n]*/gi,&apos;transform-box: &apos;+d))})};c(&apos;initial&apos;),window.requestAnimationFrame(function(){return c(&apos;fill-box&apos;)})})();</script></svg>
+@mixin icon_loading($color: #111111){
+
+  .icon_loading{
+    svg {
+      @keyframes anim{
+        0%{
+            transform:rotate(0deg)
+        }
+        to{
+            transform:rotate(360deg)
+        }
+      }
+
+      path:first-child{
+        fill: #dfe0e1;
+      }
+      path:last-child{
+        fill: $color;
+      }
+
+      *{
+          animation-duration:.7s;
+          animation-iteration-count:infinite;
+          animation-timing-function:cubic-bezier(0,0,1,1)
+      }
+      >g{
+       animation-name:anim;
+       transform-origin:50% 50%;
+       transform-box:fill-box;
+       transform:rotate(0deg);
+       animation-timing-function:cubic-bezier(.42,0,.58,1)
+     }
+
+    }
+  }
+}
+
+// <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 13"><path d="M10.9 0C9.5 0 8.5.7 7.4 2.1l-.4.5-.4-.5C5.5.7 4.5 0 3.1 0 1.4 0 0 1.6 0 3.8 0 6.7 2.3 9.9 7 13c4.7-3.1 7-6.3 7-9.2C14 1.6 12.6 0 10.9 0z" fill="#527092"/></svg>
+@mixin icon_favorite($color: #111){
+
+  .icon_favorite{
+    svg{
+      path{
+        fill: transparent;
+        stroke: $color;
+      }
+      @include hover-active-class{
+        path{
+          fill: #527092;
+          stroke: #527092;
+        }
+      }
+    }
+  }
+}

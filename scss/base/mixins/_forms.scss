@@ -1,0 +1,283 @@
+@import "./checkboxes";
+@import "./text-inputs";
+@import "./select-inputs";
+@import "./radio-buttons";
+@import "./text-area";
+
+$form-group-wrap: wrap !default;
+$input-placeholder-color: #000000 !default;
+$form-indicator-error-color: red !default;
+$form-indicator-required-color: #FFFFFF !default;
+$form-field-border-radius: 0 !default;
+$form-field-border-color: $input-border-color !default;
+$form-field-error: red !default;
+
+$base-input-placeholder-color: $input-placeholder-color;
+$base-form-group-wrap: $form-group-wrap;
+$base-form-indicator-error: $form-indicator-error;
+$base-form-indicator-required: $form-indicator-required;
+$base-form-field-error: $form-field-error;
+
+@mixin formGroup($wrap: $base-form-group-wrap) {
+  @if ($wrap == wrap) {
+    white-space: normal;
+  }
+  @if ($wrap == nowrap) {
+    white-space: nowrap;
+  }
+}
+
+@mixin form-field($field-error: $base-form-field-error, $required: $base-form-indicator-required, $error: $base-form-indicator-error) {
+  .is-hidden{
+    display: none;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    &.ng-invalid.ng-touched {
+      border-color: $field-error;
+    }
+  }
+  .is-readonly {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+  .has-error{
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+      border-color: $field-error;
+    }
+    input[type="radio"]{
+      @include radio-border($field-error);
+    }
+    input[type="checkbox"] {
+      @include checkbox-border($field-error);
+    }
+  }
+  .has-error{
+    > label:after,
+    legend:after {
+      color: $error;
+    }
+  }
+  .is-required{
+    > label:after,
+    legend:after {
+      content: " *";
+      color: $required;
+    }
+  }
+}
+
+@mixin placeholder-color($color: $base-input-placeholder-color) {
+    &::-webkit-input-placeholder { color: $color; } /* WebKit browsers */
+    &:-moz-placeholder { color: $color; } /* Mozilla Firefox 4 to 18 */
+    &::-moz-placeholder { color: $color; } /* Mozilla Firefox 19+ */
+    &:-ms-input-placeholder { color: $color; } /* Internet Explorer 10+ */
+}
+
+@mixin text-field($spacer: 5px) {
+    label {
+      @include block-label;
+      font-size: inherit;
+    }
+    input:nth-of-type(2) {
+      margin-top: $spacer;
+    }
+}
+
+@mixin textarea-field($spacer: 5px, $error-color: red) {
+  label {
+    @include block-label;
+    font-size: inherit;
+  }
+}
+
+@mixin select-field($spacer: 5px, $error-color: red) {
+  label {
+    @include block-label;
+    font-size: inherit;
+  }
+}
+
+@mixin radio-group($spacer: 5px, $error-color: red, $legend-border: '') {
+  legend {
+    @include block-label;
+    @include legend-label($spacer: $spacer, $border: $legend-border);
+    font-size: inherit;
+  }
+
+  input[type="text"] {
+    margin-left: 20px;
+    margin-top: 5px;
+    width: calc(100% - 20px);
+  }
+}
+
+@mixin checkbox-group($spacer: 5px, $error-color: red, $legend-border: '') {
+  legend {
+    @include block-label;
+    @include legend-label($spacer: $spacer, $border: $legend-border);
+    font-size: inherit;
+  }
+
+  input[type="checkbox"] {
+    margin-left: 20px;
+    margin-top: 5px;
+    width: calc(100% - 20px);
+  }
+}
+
+@mixin checkbox-field($spacer: 5px, $error-color: red) {
+  label {
+    @include inline-label;
+    $spacing-width: (($spacer / 2) + 22);
+    max-width: calc(100% - #{$spacing-width});
+    font-size: inherit;
+    line-height: inherit;
+
+    @include set-text-normal($sizes: '');
+  }
+
+  input[type="checkbox"] {
+    vertical-align: middle;
+    margin-top: 0;
+    width: 12px;
+  }
+
+  input + label,
+  label + input {
+    margin-left: ($spacer / 2);
+  }
+}
+
+// TODO: do i need this?
+@mixin inline-label($spacer: 5px) {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+  @include set-text-normal($sizes: '');
+
+  &.is-hidden {
+    @include sr-only;
+  }
+}
+
+// TODO: do i need this?
+@mixin block-label($spacer: 5px) {
+  display: block;
+  margin-bottom: $spacer;
+  @include set-text-normal($sizes: '');
+
+  &.is-hidden {
+    @include sr-only;
+  }
+}
+
+@mixin legend-label($spacer: 5px, $border: '') {
+  @include set-text-normal($sizes: '');
+  line-height: inherit;
+  color: inherit;
+  @if $border != '' {
+    border: $border;
+    border-bottom: $border;
+  }
+  @if $border != none {
+    padding-bottom: $spacer;
+  }
+  margin-bottom: 0;
+}
+
+@mixin radio-border($color) {
+  &:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid $color;
+    border-radius: 50%;
+  }
+}
+
+@mixin checkbox-border($color) {
+  &:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid $color;
+    border-radius: 3px;
+  }
+}
+
+@mixin field-option {
+  &.is-hidden {
+    display: none;
+  }
+}
+
+@mixin radio-single($spacer: 5px, $display: 'inline') {
+  @if $display == 'block' {
+    display: block;
+    margin: ($spacer * 2) 0 $spacer;
+  }
+  @else {
+    display: inline-block;
+    margin-top: $spacer;
+    & + & {
+      margin-left: $spacer;
+    }
+  }
+
+  label {
+    @include inline-label;
+    @include set-text-normal($sizes: '');
+  }
+
+  input[type="radio"] {
+    vertical-align: middle;
+    margin-top: 0;
+  }
+
+  input + label,
+  label + input {
+    margin-left: ($spacer / 2);
+  }
+}
+
+@mixin checkbox-single($spacer: 5px, $display: 'inline') {
+  @if $display == 'block' {
+    display: block;
+    margin: ($spacer * 2) 0 $spacer;
+  }
+  @else {
+    display: inline-block;
+    margin-top: $spacer;
+    & + & {
+      margin-left: $spacer;
+    }
+  }
+
+  label {
+    @include inline-label;
+    @include set-text-normal($sizes: '');
+  }
+
+  input[type="checkbox"] {
+    vertical-align: middle;
+    margin-top: 0;
+  }
+
+  input + label,
+  label + input {
+    margin-left: ($spacer / 2);
+  }
+}

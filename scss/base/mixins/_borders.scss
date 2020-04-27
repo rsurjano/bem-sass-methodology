@@ -1,0 +1,53 @@
+$default-radius: 0;
+$default-width: 0;
+$default-color: transparent;
+$default-style: solid;
+
+@mixin baseBorder($border-radius:$default-radius, $border-width:$default-width, $border-color:$default-color, $border-style:$default-style){
+    border-radius: $border-radius;
+    border: $border-width;
+    border-color: $border-color;
+    border-style: $border-style;
+}
+
+@mixin shadowBorder($border-width:$default-width, $border-color:$default-color) {
+    box-shadow: 0 0 0 $border-width $border-color inset;
+}
+
+// Borders mixins
+//
+// Mixins for defining standard borders used on elements to be used throughout
+// the site.
+//
+//
+// Border color is derived through the set-colors mixin and uses border color defined in globals/variables/_theme-colors.scss
+ $border-style: solid !default;
+ $border-width: 1px !default;
+
+ @mixin set-borders($sides: all, $width: $border-width, $style: $border-style){
+
+   @if( $sides == all){
+     border-width: $width;
+   }
+   @else if( $sides == horizontal){
+     border-width: 0 $width;
+   }
+   @else if( $sides == vertical ){
+     border-width: $width 0;
+   }
+   @else {
+     border-width: 0;
+
+     @if type-of($sides) == 'list' {
+       @each $side in $sides {
+         border-#{$side}-width: $width;
+       }
+     }
+     @else {
+       border-#{$sides}-width: $width;
+     }
+   }
+
+   border-style: $style;
+
+ }

@@ -1,0 +1,27 @@
+$textarea-width: $input-width !default;
+$textarea-height: 8em !default;
+$textarea-border-color: $input-border-color !default;
+$textarea-textpad: $input-textpad !default;
+$textarea-color: $input-text-color !default;
+$textarea-text-size: $input-text-size !default;
+$textarea-margin-block: 10px !default;
+$textarea-background: $white !default;
+
+@mixin textArea(
+    $height: $textarea-height,
+    $borderColor: $textarea-border-color,
+    $bgColor: $textarea-background,
+    $padding: $textarea-textpad,
+    $color: $textarea-color,
+    $size: $textarea-text-size,
+    $margin-block: $textarea-margin-block
+  ) {
+  @include contentBlock(full, full, $padding);
+  @include baseBorder(0, 1px, $borderColor, solid);
+  @include baseFontStyle( normal, normal, $size );
+  @include baseFontColor( $color, 1 );
+  @include marginBlock( vertical, $margin-block );
+  outline: none;
+  background-color: $bgColor;
+  height: $height;
+}

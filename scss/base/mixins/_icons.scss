@@ -1,0 +1,60 @@
+//
+// Icons mixins
+//
+
+// svg-icon
+// Styling for an sgv icon;
+//
+// This mixin gets called on a <span> element.
+//
+// $svg: svg icon to use
+// $width: Width of the icon; can be set to any valid CSS width value
+// $height: Height of the icon; can be set to any valid CSS width value
+// $colors: Color to fill the svg icon; can be set to any valid CSS fill value, but inherit
+//
+// $svg should be a Sass map following the structure on variables/svg-icons
+@mixin svg-icon( $svg,
+        $width: 24px,
+        $height: $width,
+        $color: #000000 ) {
+
+  $svg-icon: svg-create( $svg, $color );
+  $url: svg-url( $svg-icon );
+
+  $svg-viewBox: map-get( $svg, viewBox );
+  $svg-width: nth( $svg-viewBox, 3 );
+  $svg-height: nth( $svg-viewBox, 4 );
+
+  $svg_ratio-height: $svg-height / $svg-width;
+  $svg_ratio-width: $svg-width / $svg-height;
+
+  &:after {
+    content: #{ $url };
+    display: block;
+
+    @if $height == auto {
+      @if $width != auto {
+        width: $width;
+        height: $width * $svg_ratio-height;
+      }
+      @else {
+        width: $svg-width;
+        height: $svg-height;
+      }
+    }
+    @else if $width == auto {
+      @if $height != auto {
+        width: $height * $svg_ratio-width;
+        height: $height;
+      }
+      @else {
+        width: $svg-width;
+        height: $svg-height;
+      }
+    }
+    @else {
+      height: $height;
+      width: $width;
+    }
+  }
+}
