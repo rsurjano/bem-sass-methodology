@@ -1,0 +1,83 @@
+// Only display content to screen readers
+//
+// See: http://a11yproject.com/posts/how-to-hide-content
+
+
+@mixin sr-only{
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+}
+
+// Use in conjunction with .sr-only to only display content when it's focused.
+// Useful for "Skip to main content" links; see http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1
+// Credit: HTML5 Boilerplate
+
+@mixin sr-only-focusable{
+  .sr-only-focusable {
+    &:active,
+    &:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+    }
+  }
+}
+
+html {
+  font-family: $primary-font;
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+ul,
+li,
+dl,
+dt,
+dd {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	font-weight: normal;
+}
+
+fieldset,
+legend {
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p, span {
+	margin: 0;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+  @include hover-active{
+    text-decoration: underline;
+  }
+}
+
+input {
+  font-family: $primary-font;
+  width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}

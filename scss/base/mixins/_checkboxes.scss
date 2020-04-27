@@ -1,0 +1,60 @@
+$checkbox-width: 14px !default;
+$checkbox-height: 14px !default;
+$checkbox-padforlabel: 25px !default;
+$checkbox-color: $grey-text-ltr !default;
+$checkbox-disabled-color: #d2d2d2 !default;
+$checkbox-background: $white !default;
+$checkbox-background-active: $black-1 !default;
+$checkbox-font-size: 14px !default;
+
+@mixin checkboxBase(
+  $width: $checkbox-width,
+  $height: $checkbox-height,
+  $font-size: $checkbox-font-size,
+  $pad: $checkbox-padforlabel,
+  $bgcolor: $checkbox-background,
+  $bgcolor-active: $checkbox-background-active,
+  $disabled-color: $checkbox-disabled-color,
+  $color: $checkbox-color
+  ) {
+    &[type="checkbox"] {
+        &:not(:checked), &:checked {
+            @include hideOffScreen;
+            & + label {
+                // place the label for the checkbox properly
+                @include baseFontColor($color, 1);
+                @include baseFontStyle(light, normal, $font-size, $font-size);
+                position: relative;
+                padding-left: $pad;
+                cursor: pointer;
+                text-transform: none;
+
+                // create the 'box' of the checkbox
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: $width;
+                    height: $height;
+                    @include baseBorder(0, 1px, $color, solid);
+                    background-color: $bgcolor;
+                }
+            }
+            &:checked + label:before {
+                background-color: #2C2C2C;
+            }
+        }
+        &:disabled {
+            &:not(:checked), &:checked {
+                & + label:before {
+                    box-shadow: none;
+                    @include baseBorder(0, 1px, $color, solid);
+                    background-color: $disabled-color;
+                }
+            }
+        }
+    }
+
+}
+

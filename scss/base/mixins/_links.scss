@@ -1,0 +1,32 @@
+$link-color: $black-2 !default;
+$link-background-color: transparent !default;
+
+@mixin linkColors($color: $link-color, $background-color: $link-background-color) {
+  $hover-color: $color;
+  $active-color: $color;
+
+  @if $color != inherit {
+    $luminance: color_luminance($color);
+    @if $luminance < 0.5 {
+      $hover-color: lighten($color,15%);
+      $active-color: darken($color,15%);
+    } @else {
+      $hover-color: darken($color,15%);
+      $active-color: lighten($color,15%);
+    }
+  }
+
+  &, &:visited {
+    background-color: $background-color;
+    color: $color;
+  }
+
+  &:hover,
+  &:focus {
+    color: $hover-color;
+  }
+
+  &:active {
+    color: $active-color;
+  }
+}

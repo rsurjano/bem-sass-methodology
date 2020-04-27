@@ -1,0 +1,172 @@
+$button-border-color: #DFE0E1 !default;
+$button-border-color-hover: $button-border-color !default;
+$button-border-color-active: $button-border-color !default;
+$button-border-color-disabled: $button-border-color !default;
+$button-border-style: solid !default;
+$button-border-width: 1px !default;
+$button-color: $black-1 !default;
+$button-active: $black-2 !default;
+$button-disabled: $black-2 !default;
+$button-hover: $black-2 !default;
+$button-bgcolor: $white !default;
+$button-bgcolor-active: $button-bgcolor !default;
+$button-bgcolor-disabled: $button-bgcolor !default;
+$button-bgcolor-hover: $button-bgcolor !default;
+$button-background-color: $white !default;
+$button-border-size: 1px !important;
+$button-display: inline-block !default;
+$button-font-size: 13px !default;
+$button-outline: false !default;
+$button-padding: 15px 30px !default;
+$button-radius: 0 !default;
+$button-width: auto !default;
+
+@mixin buttonBase(
+    $width: $button-width,
+    $active: $button-active,
+    $border-color: $button-border-color,
+    $border-color-hover: $button-border-color-hover,
+    $border-color-active: $button-border-color-active,
+    $border-color-disabled: $button-border-color-disabled,
+    $border-size: $button-border-size,
+    $border-style: $button-border-style,
+    $border-width: $button-border-width,
+    $disabled: $button-disabled,
+    $color: $button-color,
+    $display: $button-display,
+    $font-size: $button-mobile-font-size,
+    $hover: $button-hover,
+    $padding: $button-padding,
+    $useOutline: $button-outline,
+    $radius: $button-radius,
+    $bgcolor: $button-bgcolor,
+    $bgcolor-active: $button-bgcolor-active,
+    $bgcolor-disabled: $button-bgcolor-disabled,
+    $bgcolor-hover: $button-bgcolor-hover
+  ) {
+    @include baseBorder($border-radius: $radius, $border-width: $border-width, $border-color: $border-color, $border-style: $border-style);
+
+  &:hover, &:focus {
+    @include baseFontDecoration(uppercase, none);
+    color: $hover;
+    text-decoration: none;
+    background-color: $bgcolor-hover;
+    border-color: $border-color-hover;
+  }
+  &:active {
+      color: $active;
+      text-decoration: none;
+      background-color: $bgcolor-active;
+      border-color: $border-color-active;
+  }
+  &[disabled] {
+      color: $disabled;
+      opacity: 1;
+      cursor: not-allowed;
+      background-color: $bgcolor-disabled;
+      border-color: $border-color-disabled;
+  }
+  @include baseFontDecoration(uppercase, none);
+
+	cursor: pointer;
+  color: $color;
+  background-color: $bgcolor;
+	width: $width;
+	padding: $padding;
+  display: $display;
+  font-size: $font-size;
+  @include screen-sm() {
+    font-size: $button-font-size;
+  }
+  @if $useOutline {
+      outline-color: $border-color;
+      outline-style: $border-style;
+      outline-width: $border-size;
+      border-radius: $radius;
+  }
+  @if not $useOutline {
+      outline: none;
+      border-width: $border-size;
+      border-style: $border-style;
+      border-radius: $radius;
+  }
+}
+
+@mixin button-color($color){
+  @if (lightness($color) > 50) {
+    @include buttonColorBase($color, $button-fontColor, 1);
+  } @else {
+    @include buttonColorBase($color, $white, 1);
+  }
+}
+
+@mixin button-border($color){
+  @include buttonColorBase($color, $color, 0);
+  @include baseBorder(0,1px,$color,solid);
+}
+
+@mixin button-shadow-border($color){
+  @include buttonColorBase($color, $color, 0);
+  @include shadowBorder(1px, $color);
+
+  &[disabled]{
+      @include shadowBorder(1px, rgba($color, .5));
+  }
+}
+
+@mixin button-icon {
+  @include buttonIconBase();
+  @include buttonColorBase();
+  &:before{
+    @include margin(0 10px 0 0)
+  }
+}
+
+@mixin disabledButton($bg: none, $font: #000000){
+  border: 1px solid $button-border-color-disabled;
+	color: hexToRGBA($font, 0.5);
+	cursor: not-allowed;
+	&:hover {
+		color: hexToRGBA($font, 0.5);
+		background-color: $bg;
+	}
+}
+
+@mixin buttonColorBase($bg:$grey-lt, $font:$black-1, $alpha: 1){
+	$bg-color: $bg;
+	$hover-color: darken($bg,15%);
+	$hover-font: $font;
+
+	@if( $alpha != 1){
+		$bg-color: hexToRGBA($bg, $alpha);
+	};
+
+	@if($alpha != 1) {
+		$hover-color: hexToRGBA($bg, $alpha + 0.15);
+	};
+
+	@if( $alpha > 0.4) {
+		$hover-font: #FFFFFF;
+	}
+
+	background-color: $bg-color;
+	color: $font;
+	transition: background-color $transition-very-fast, color $transition-very-fast;
+
+	&:hover {
+		background-color: $hover-color;
+		color: $hover-font;
+	}
+
+	&[disabled]{
+		@include disabledButton($bg, $font);
+	}
+}
+
+@mixin buttonIconBase(){
+	border: none;
+	border-radius: 0;
+	padding: $button-padding;
+	line-height: 0;
+  cursor: pointer;
+}

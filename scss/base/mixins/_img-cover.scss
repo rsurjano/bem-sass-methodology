@@ -1,0 +1,75 @@
+ // IMG Cover Mixins SCSS
+
+ // Apply to something you want to be covered by an img. Magic trick that
+ // makes an img works as a background cover.
+
+ // Assumes an HTML structure like:
+ // <figure class="outer">
+ //     <img href="http://lorempixel.com/300/200" />
+ // </figure>
+
+ // The img-cover mixin is called on the outer figure, not to the inner img
+
+// img-cover
+// Styling for a img; see comments at top of file for HTML structure details
+//
+// This mixin gets called on a <figure> wrapper around an img element.
+//
+// $width: Width of the wrapper; can be set to any valid CSS width value
+// $height: Height of the wrapper; can be set to any valid CSS width value
+// $mW: Max Width of the image; can be set to any valid CSS max-width value
+// $mH: Max Height of the image; can be set to any valid CSS max-height value
+@mixin img-cover($width: auto, $height: auto, $mW: none, $mH: none) {
+	position: relative;
+  height: $height;
+  max-height: $mH;
+  max-width: $mW;
+  overflow: hidden;
+  width: $width;
+
+	img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $width;
+    height: auto;
+    min-height: 101%;
+    min-width: 101%;
+    max-height: $mH;
+    max-width: $mW;
+    transform: translate(-50%, -50%);
+    // object-fit polyfill for IE
+    // https://github.com/bfred-it/object-fit-images
+    @include object-fit;
+  }
+}
+
+// aspect-ratio
+//
+// This mixin gets called on a <figure> wrapper around the img.
+//
+// $h: Horizontal aspect ratio
+// $v: Vertical aspect ratio
+@mixin aspect-ratio($h: 1, $v: 1, $percentage: 100%) {
+  padding-bottom: $percentage / $h * $v;
+}
+
+// https://github.com/bfred-it/object-fit-images
+//
+/*
+  This mixin can be used to set the object-fit:
+  @include object-fit(contain);
+  or object-fit and object-position:
+  @include object-fit(cover, top);
+*/
+@mixin object-fit($fit: cover, $position: null){
+  -o-object-fit: $fit;
+     object-fit: $fit;
+  @if $position {
+	  -o-object-position: $position;
+	     object-position: $position;
+  	font-family: 'object-fit: #{$fit}; object-position: #{$position}';
+  } @else {
+  	font-family: 'object-fit: #{$fit}';
+  }
+}

@@ -1,0 +1,56 @@
+$symbolWidth: 37px;
+$symbolHeight: $symbolWidth;
+$symbolPadding: 0;
+$symbolBgColor: #BAB3B2;
+$symbolBorderColor: $black-1;
+$symbolFontColor: $black-1;
+$symbolFontSize: $base-font-size;
+$symbolBorderWidth: 1px;
+$symbolLineHeight: normal;
+$symbolPadding: 0;
+$symbolLetterSpacing: 2px;
+
+@mixin symbol($width:$symbolWidth,
+                $height:$symbolHeight,
+                $padding: $symbolPadding,
+                $bgColor:$symbolBgColor,
+                $borderColor:$symbolBorderColor,
+                $fontColor:$symbolFontColor,
+                $fontSize:$symbolFontSize,
+                $borderRadius:$symbolWidth/2,
+                $borderWidth:$symbolBorderWidth,
+                $lineHeight:$symbolLineHeight,
+                $textTransform:uppercase) {
+
+    @include baseFontColor($fontColor, 1);
+    @include baseFontStyle(light, normal, $fontSize, $base-font-size);
+    @include baseBorder($borderRadius, $borderWidth, $borderColor, solid);
+    @include baseFontDecoration($textTransform, none);
+    background-color: $bgColor;
+    display:inline-block;
+    width: $width;
+    height: $height;
+    padding: $padding;
+    text-align: center;
+    vertical-align: bottom;
+    line-height: $lineHeight;
+    letter-spacing: $symbolLetterSpacing;
+}
+
+
+@mixin circleSymbol($size: 30px){
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    text-align: center;
+    line-height: $size;
+}
+
+
+@mixin squareSymbol($padding: 4px 12px){
+    @include baseFontColor(#000000, 1);
+    @include baseFontStyle(light, normal, 14px, $base-font-size);
+    line-height: 1;
+    text-align: center;
+    padding: $padding;
+}

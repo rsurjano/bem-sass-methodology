@@ -1,0 +1,17 @@
+{
+  "name": "bem-sass-implementation",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Roy",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "bootstrap": "4.4.1",
+    "normalize-scss": "7.0.1",
+    "sass": "1.26.3",
+    "typescript": "3.8.3"
+  }
+}

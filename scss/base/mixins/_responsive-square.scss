@@ -1,0 +1,60 @@
+//
+// Responsive Square Mixins SCSS
+//  *
+// Apply to something you want to be responsively square. Magic trick that
+// makes a container height always match its width.
+//  *
+// Assumes an HTML structure like:
+// <div class="square">
+//     <div class="content">
+//         Hello!
+//     </div>
+// </div>
+//  *
+// The responsive-square mixin is called on the outer div, not to the inner content
+//
+
+@mixin responsive-square($width) {
+	position: relative;
+	width: $width;
+
+	&::after {
+		content: "";
+		display: block;
+		padding-bottom: 100%;
+	}
+
+	> * {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+// This is currently set up based on the structure rendered for YouTube and Vidyard
+// video types. The YouTube video is an iframe directly in the parent, while Vidyard
+// creates some additional structure around their iframe. This mixin should be called
+// on the parent container of the video embed structure
+@mixin responsive-media($width: 16, $height: 9, $selector: iframe) {
+	position: relative;
+	&:before {
+		display: block;
+		content: "";
+		width: 100%;
+		padding-top: ($height / $width) * 100%;
+	}
+	> #{$selector} {
+		position: absolute;
+		width: 100%;
+		@if( $selector == img){
+			max-height: 100%;
+		}
+		@else {
+			height: 100%;
+		}
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BEM & SASS</title>
+    <script src="./ts/index.ts"></script>
+    <link rel="stylesheet" href="./scss/main.scss" />
+  </head>
+  <body>
+
+    <!-- DEMO COMPONENT -->
+    <div class="demo-banner">
+      <div class="demo-banner_inner">
+
+        <!-- TEXT-CONTENT -->
+        <div
+          class="demo-banner_textContent"
+          style="color: black; text-align: left; top: 32%; left: 8%; white-space: normal; margin-left: 0px; transform: translate(0px, 0px); bottom: auto; right: auto;"
+        >
+          <!-- HEADLINE -->
+          <a class="demo-banner_headline" href="#"> HEADLINE</a>
+
+          <!-- SUBTITLE -->
+          <a class="demo-banner_subtitle" href="#">
+            Here comes a subtitle for demo
+          </a>
+
+          <!-- BUTTON -->
+          <div>
+            <div class="demo-banner_ctas">
+              <a
+                class="demo-banner_button demo-button demo-button--primary"
+                aria-label="DEMO BUTTON"
+                href="#"
+              >
+                <span>DEMO BUTTON</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- WALLPAPER -->
+        <a class="demo-banner_media" href="#"
+          ><img
+            class="demo-banner_mediaContainer demo-banner_mediaContainer--image"
+            alt=""
+            src="wallpaper.jpg"
+          />
+        </a>
+      </div>
+    </div>
+    <!-- DEMO BANNER -->
+  </body>
+</html>

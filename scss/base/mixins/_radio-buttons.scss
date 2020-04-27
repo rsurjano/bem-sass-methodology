@@ -1,0 +1,64 @@
+$radio-font-size: 14px !default;
+$radio-width: 14px !default;
+$radio-color: #000 !default;
+$radio-height: 14px !default;
+$radio-textpad: 25px !default;
+$radio-disabled: #d2d2d2 !default;
+$radio-margin-bottom: 10px !default;
+$radio-background: $white !default;
+$radio-background-active: $black-1 !default;
+
+@mixin radioButtonBase(
+    $width: $radio-width,
+    $height: $radio-height,
+    $pad: $radio-textpad,
+    $font-size: $radio-font-size,
+    $margin-bottom: $radio-margin-bottom,
+    $color: $radio-color,
+    $disabled: $radio-disabled,
+    $bgcolor: $radio-background,
+    $bgcolor-active: $radio-background-active,
+    $top: 2px,
+    $left: 0
+  ) {
+	&[type="radio"] {
+		&:not(:checked), &:checked {
+			@include hideOffScreen;
+			& + label {
+				/* place the label for the radio button properly */
+				@include baseFontColor($color, 1);
+				@include baseFontStyle(normal, normal, $font-size, $font-size);
+				position: relative;
+				padding-left: $pad;
+				cursor: pointer;
+				display: block;
+				margin-bottom: $margin-bottom;
+
+				/* create the 'circle' of the radio button */
+				&:before {
+					content: '';
+					position: absolute;
+					left: $left;
+					top: $top;
+					width: $width;
+					height: $height;
+					@include baseBorder(0, 1px, $color, solid);
+					border-radius: 50%;
+					background-color: $bgcolor;
+				}
+			}
+			&:checked + label:before {
+				background-color: $bgcolor-active;
+			}
+		}
+		&:disabled {
+			&:not(:checked), &:checked {
+				& + label:before {
+					box-shadow: none;
+					@include baseBorder(0, 1px, $color, solid);
+					background-color: $disabled;
+				}
+			}
+		}
+	}
+}

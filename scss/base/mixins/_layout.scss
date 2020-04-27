@@ -1,0 +1,174 @@
+$layout-content-max-width: 1400px !default;
+$layout-content-panel-background: #ffffff !default;
+$layout-content-block-width: full !default;
+$layout-content-block-inset: none !default;
+$layout-content-block-padding: 20px !default;
+$layout-content-block-padding: 20px !default;
+
+@mixin contentBlock(
+    $width: $layout-content-block-width,
+    $inset: $layout-content-block-inset,
+    $padding: $layout-content-block-padding,
+    $max-width: $layout-content-max-width
+  ){
+	@if($inset == vertical){
+		padding: $padding 0;
+	}
+	@if($inset == horizontal){
+		padding: 0 $padding;
+	}
+	@if($inset == full){
+		padding: $padding;
+	}
+
+	@if($width==full){
+		width: 100%;
+	}
+	@if($width == content){
+		max-width: $max-width;
+		width: 100%;
+		margin: 0 auto;
+	}
+}
+
+@mixin contentPanel ($background: $layout-content-panel-background) {
+	@include contentBlock($inset: full, $padding: 10px);
+	background: $background;
+}
+
+// Panel grid component
+@mixin contentPanelGrid($leftMargin) {
+
+	@media ( min-width: $bp-sm ) {
+		.okwd-grid__cell {
+
+			margin-right: $leftMargin;
+
+		}
+	}
+
+	> div {
+		&:first-child {
+			> div {
+				margin-left: 0;
+			}
+		}
+	}
+
+}
+
+@mixin margin($margins...) {
+
+  @if length($margins) == 1 {
+    margin: nth($margins, 1)
+  }
+
+  @if length($margins) == 2 {
+    margin: nth($margins, 1) nth($margins, 2)
+  }
+
+  @if length($margins) == 3 {
+    margin: nth($margins, 1) nth($margins, 2) nth($margins, 3)
+  }
+
+  @if length($margins) == 4 {
+    margin: nth($margins, 1) nth($margins, 2) nth($margins, 3) nth($margins, 4)
+  }
+}
+
+@mixin padding($paddings...) {
+
+  @if length($paddings) == 1 {
+    padding: nth($paddings, 1)
+  }
+
+  @if length($paddings) == 2 {
+    padding: nth($paddings, 1) nth($paddings, 2)
+  }
+
+  @if length($paddings) == 3 {
+    padding: nth($paddings, 1) nth($paddings, 2) nth($paddings, 3)
+  }
+
+  @if length($paddings) == 4 {
+    padding: nth($paddings, 1) nth($paddings, 2) nth($paddings, 3) nth($paddings, 4)
+  }
+}
+
+@mixin marginBlock($inset: none, $margin: 20px){
+
+  @if($inset == vertical){
+    margin: $margin 0;
+  }
+
+  @if($inset == horizontal){
+    margin: 0 $margin;
+  }
+
+  @if($inset == full){
+    margin: $margin;
+  }
+
+}
+
+
+@mixin alignElementsInContainer($valign: middle){
+  display: inline-block;
+  vertical-align: $valign;
+}
+
+
+@mixin centerElementInContainer($type: hoizontal, $hoffset: 0, $voffset: 0){
+
+    $yoffset: 0 - (50 + $voffset)+'%';
+    $xoffset: 0 - (50 + $hoffset)+'%';
+
+    position: absolute;
+
+    @if($type == horizontal){
+        left: 50%;
+        transform: translateX(#{$xoffset});
+    }
+
+    @if($type == vertical){
+        top: 50%;
+        transform: translateY(#{$yoffset});
+    }
+
+    @if($type == full){
+        top: 50%;
+        left: 50%;
+        transform: translateY(#{$yoffset}) translateX(#{$xoffset});
+    }
+
+}
+
+@mixin screen-xs () {
+  @media ( max-width: $bp-xs ) {
+    @content;
+  }
+}
+
+@mixin screen-sm () {
+  @media ( min-width: $bp-sm ) {
+    @content;
+  }
+}
+
+@mixin screen-md () {
+  @media ( min-width: $bp-md ) {
+    @content;
+  }
+}
+
+@mixin screen-lg () {
+  @media ( min-width: $bp-lg ) {
+    @content;
+  }
+}
+
+@mixin screen-xl () {
+  @media ( min-width: $bp-xl ) {
+    @content;
+  }
+}

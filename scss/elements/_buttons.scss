@@ -1,0 +1,174 @@
+// BUTTONS
+
+@mixin button-white-main() {
+  // with hover state
+  @include buttonBase(
+    $color: #4b4b4b,
+    $border-color: #dfe0e1,
+    $border-color-hover: #8b8b8b,
+    $hover: $black-2,
+    $padding: (
+      11px 20px
+    )
+  );
+}
+
+@mixin button-main() {
+  // with mobile version
+  @include buttonBase(
+    $color: #ffffff,
+    $border-size: 0,
+    $bgcolor: #2c2c2c,
+    $bgcolor-hover: $black-2,
+    $hover: #ffffff,
+    $padding: (
+      11px 20px
+    )
+  );
+}
+
+@mixin button-primary() {
+  @include buttonBase(
+    $width: $button-width,
+    $color: $button-primary-text-color,
+    $border-color-hover: $button-primary-hover-border-color,
+    $border-color-active: $button-primary-hover-border-color,
+    $border-color-disabled: $button-primary-hover-border-color,
+    $border-size: 1,
+    $bgcolor: $button-primary-bg-color,
+    $bgcolor-hover: $button-primary-hover-bg-color,
+    $hover: $button-primary-hover-text-color,
+    $padding: (
+      11px 20px
+    )
+  );
+}
+
+@mixin button-secondary() {
+  @include buttonBase(
+    $width: $button-width,
+    $color: $button-secondary-text-color,
+    $border-color-hover: $button-secondary-hover-border-color,
+    $border-color-active: $button-secondary-hover-border-color,
+    $border-color-disabled: $button-secondary-hover-border-color,
+    $border-size: 1,
+    $bgcolor: $button-secondary-bg-color,
+    $bgcolor-hover: $button-secondary-hover-bg-color,
+    $hover: $button-secondary-hover-text-color,
+    $padding: (
+      11px 20px
+    )
+  );
+}
+
+@mixin button-tertiary() {
+  @include buttonBase(
+    $width: $button-width,
+    $color: $button-tertiary-text-color,
+    $border-color: $button-tertiary-border-color,
+    $border-color-hover: $button-tertiary-hover-border-color,
+    $border-color-active: $button-tertiary-hover-border-color,
+    $border-color-disabled: $button-tertiary-hover-border-color,
+    $border-size: 1,
+    $bgcolor: $button-tertiary-bg-color,
+    $bgcolor-hover: $button-tertiary-hover-bg-color,
+    $hover: $button-tertiary-hover-text-color,
+    $padding: (
+      11px 20px
+    )
+  );
+}
+
+@mixin button-top-small() {
+}
+
+@mixin button-deselected() {
+}
+
+@mixin button-selection-selected() {
+}
+
+// Base Button
+
+$componentClass: "button";
+$prefix: $componentClass;
+
+// pg-button
+
+@include new($componentClass) {
+  @include button-main();
+  text-align: center;
+
+  &[disabled] {
+    @include disabledButton();
+  }
+  @include new($prefix, $v: "primary") {
+  }
+
+  @include new($prefix, $v: "primaryDesktop") {
+    color: $black-1;
+    background-color: transparent;
+    text-decoration: underline;
+    font-weight: 500;
+    @include screen-sm() {
+      @include button-main();
+      text-decoration: none;
+      color: white !important;
+    }
+  }
+
+  @include new($prefix, $v: "secondary") {
+    @include button-secondary();
+    @include state("selected") {
+      color: $button-secondary-selected-text-color;
+      background-color: $button-secondary-selected-bg-color;
+    }
+  }
+
+  @include new($prefix, $v: "secondaryDesktop") {
+    background-color: transparent;
+    text-decoration: underline;
+    font-weight: 500;
+    @include screen-sm() {
+      @include button-secondary();
+      color: $button-secondary-text-color !important;
+      @include state("selected") {
+        color: $button-secondary-selected-text-color !important;
+        background-color: $button-secondary-selected-bg-color;
+      }
+    }
+  }
+
+  @include new($prefix, $v: "tertiaryDesktop") {
+    background-color: transparent;
+    text-decoration: underline;
+    font-weight: 500;
+    @include screen-sm() {
+      @include button-tertiary();
+      color: $button-tertiary-text-color !important;
+      @include state("selected") {
+        color: $button-tertiary-selected-text-color !important;
+        background-color: $button-tertiary-selected-bg-color;
+      }
+    }
+  }
+
+  @include new($prefix, $v: "link") {
+    color: inherit !important;
+    border: 0 !important;
+    background-color: transparent !important;
+    text-decoration: underline !important;
+
+    @include screen-sm() {
+      color: inherit !important;
+      border: 0 !important;
+      background-color: transparent !important;
+      text-decoration: underline !important;
+    }
+  }
+
+  @include new($prefix, $v: "small") {
+    font-size: 1.3rem;
+    padding: 11px 18px;
+  }
+}

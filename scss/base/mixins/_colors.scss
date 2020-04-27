@@ -1,0 +1,17 @@
+@mixin set-colors($colors) {
+  @if hasBackground($colors) {
+    background-color: background($colors);
+  }
+
+  @if hasForeground($colors) {
+    color: foreground($colors);
+  }
+
+  @if hasBorderColor($colors) {
+    border-color: borderColor($colors);
+  }
+
+  @if hasFillColor($colors) {
+    fill: fillColor($colors);
+  }
+}

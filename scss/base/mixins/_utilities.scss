@@ -1,0 +1,638 @@
+// convert non-rgba color to rgba for opacity
+@function hexToRGBA($color: #ffffff, $opacity: 1) {
+    @return rgba($color, $opacity);
+}
+
+/* RETURN VALUE FROM MAP
+	@summary:
+		return the value from a key -- or fail gracefully
+	@params: [map name, key]
+
+	@returns: correspoding value in map -- or null
+*/
+
+@function getMapValues($map, $key) {
+  $maps: $map;
+  @if map-has-key($maps, $key) {
+    @return map-get($maps, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $maps.";
+  @return null;
+}
+
+//
+// Math SCSS
+//
+// Various potentially useful SCSS functions for mathematical calculations
+//
+
+@function gcd($a, $b) {
+  // From: http://rosettacode.org/wiki/Greatest_common_divisor#JavaScript
+  @if ($b != 0) {
+    @return gcd($b, $a % $b);
+  }
+  @else {
+    @return abs($a);
+  }
+}
+
+@function pow($base, $exponent, $prec: 12) {
+  // Handles decimal exponents by trying to convert them into a fraction and then use a nthRoot-algorithm for parts of the calculation
+  @if (floor($exponent) != $exponent) {
+    $prec2: pow(10, $prec);
+    $exponent: round($exponent * $prec2);
+    $denominator: gcd($exponent, $prec2);
+    @return nthRoot(pow($base, $exponent / $denominator), $prec2 / $denominator, $prec);
+  }
+  $value: $base;
+  @if $exponent > 1 {
+     @for $i from 2 through $exponent{
+      $value: $value * $base;
+    }
+  }
+  @else if $exponent < 1 {
+     @for $i from 0 through -$exponent{
+      $value: $value / $base;
+    }
+  }
+  @return $value;
+}
+
+@function nthRoot($num, $n: 2, $prec: 12) {
+  // From: http://rosettacode.org/wiki/Nth_root#JavaScript
+  $x: 1;
+  @for $i from 0 through $prec {
+    $x: 1 / $n * (($n - 1) * $x + ($num / pow($x, $n - 1)));
+  }
+  @return $x;
+}
+
+
+
+// Contrast SCSS
+// Calculates a numeric representation of the contrast between two colors, and
+// provides a function for picking the best contrasting color from a list
+
+
+@function color_luminance($color) {
+  // Adapted from: https://github.com/LeaVerou/contrast-ratio/blob/gh-pages/color.js
+  // Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+  $rgba: red($color), green($color), blue($color);
+  $rgba2: ();
+  @for $i from 1 through 3 {
+    $rgb: nth($rgba, $i);
+    $rgb: $rgb / 255;
+    $rgb: if($rgb < .03928, $rgb / 12.92, pow(($rgb + .055) / 1.055, 2.4));
+    $rgba2: append($rgba2, $rgb);
+  }
+  @return .2126 * nth($rgba2, 1) + .7152 * nth($rgba2, 2) + 0.0722 * nth($rgba2, 3);
+}
+
+@function color_contrast($color1, $color2) {
+  // Adapted from: https://github.com/LeaVerou/contrast-ratio/blob/gh-pages/color.js
+  // Formula: http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
+  $luminance1: color_luminance($color1) + 0.05;
+  $luminance2: color_luminance($color2) + 0.05;
+  $ratio: $luminance1 / $luminance2;
+  @if $luminance2 > $luminance1 {
+    $ratio: 1 / $ratio;
+  }
+  $ratio: round($ratio * 10) / 10;
+  @return $ratio;
+}
+
+@function pick_best_color($base, $colors, $tolerance: 0) {
+  $contrast: color_contrast($base, nth($colors, 1));
+  $best: nth($colors, 1);
+  @for $i from 2 through length($colors) {
+    $current_contrast: color_contrast($base, nth($colors, $i));
+    @if ($current_contrast - $contrast > $tolerance) {
+      $contrast: color_contrast($base, nth($colors, $i));
+      $best: nth($colors, $i);
+    }
+  }
+  @if ($contrast < 3) {
+     @warn"Contrast ratio of #{$best} on #{$base} is pretty bad, just #{$contrast}";
+  }
+  @return $best;
+}
+
+@mixin hideOffScreen() {
+    position: absolute;
+    left: -9999px;
+}
+
+
+//
+//  Function to create an svg
+//
+// $opts should be a Sass map following the structure on variables/svg-icons
+@function svg-create( $opts, $color: #000000 ) {
+  $viewBox: map-get( $opts, viewBox );
+  $d: map-get( $opts, d );
+
+  $svg: '<svg xmlns="http://www.w3.org/2000/svg"';
+  $svg: $svg + ' viewBox="#{ $viewBox }">';
+
+  // Path
+  $svg: $svg + '<path class="st0"';
+  $svg: $svg + ' d="#{ $d }"';
+
+  // Fill Color
+  $svg: $svg + ' fill="#{ $color }" />';
+
+  $svg: $svg + '</svg>';
+
+  @return $svg;
+}
+
+//
+//  Function to create an optimized svg url
+//
+@function svg-url( $svg ) {
+  //
+  //  Chunk up string in order to avoid
+  //  "stack level too deep" error
+  //
+  $encoded: '';
+  $slice: 2000;
+  $index: 0;
+  $loops: ceil( str-length( $svg ) / $slice );
+
+  @for $i from 1 through $loops {
+      $chunk: str-slice( $svg, $index, $index + $slice - 1 );
+
+      //
+      //   Encode
+      //
+      $chunk: str-replace( $chunk, '"', '\'' );
+      $chunk: str-replace( $chunk, '%', '%25' );
+      $chunk: str-replace( $chunk, '&', '%26' );
+      $chunk: str-replace( $chunk, '#', '%23' );
+      $chunk: str-replace( $chunk, '{', '%7B' );
+      $chunk: str-replace( $chunk, '}', '%7D' );
+      $chunk: str-replace( $chunk, '<', '%3C' );
+      $chunk: str-replace( $chunk, '>', '%3E' );
+
+      //
+      //    The maybe list
+      //
+      //    Keep size and compile time down
+      //    ... only add on documented fail
+      //
+      //  $chunk: str-replace( $chunk, ' ', '%20' );
+      //  $chunk: str-replace( $chunk, ':', '%3A' );
+      //  $chunk: str-replace( $chunk, '=', '%3D' );
+      //  $chunk: str-replace( $chunk, '|', '%7C' );
+      //  $chunk: str-replace( $chunk, '[', '%5B' );
+      //  $chunk: str-replace( $chunk, ']', '%5D' );
+      //  $chunk: str-replace( $chunk, '^', '%5E' );
+      //  $chunk: str-replace( $chunk, '`', '%60' );
+      //  $chunk: str-replace( $chunk, ';', '%3B' );
+      //  $chunk: str-replace( $chunk, '?', '%3F' );
+      //  $chunk: str-replace( $chunk, '@', '%40' );
+
+      $encoded: #{ $encoded }#{ $chunk };
+      $index: $index + $slice;
+  }
+
+  @return url("data:image/svg+xml,#{ $encoded }");
+}
+
+//  Helper function to replace characters in a string
+@function str-replace( $string, $search, $replace: '' ) {
+  $index: str-index( $string, $search );
+
+  @return if( $index, str-slice( $string, 1, $index - 1 ) + $replace + str-replace(str-slice($string, $index + str-length( $search ) ), $search,  $replace), $string );
+}
+
+
+//
+// Color helper functions
+//
+// Color variables can be either a single value or a list of values. In the case of a
+// list, the list is treated as (background, foreground, border). You can leave
+// off values from the list, but not skip values. For example, a list of two colors
+// will be treated as (background, foreground).
+//
+// The functions in this file are to make it easier to read specific colors out
+// of a color list variable
+//
+
+// Detection functions - determines if a color variable contains the color setting
+@function hasBackground($colors) {
+	@return ((type-of($colors) == 'list' and length($colors) >= 1 and type-of(nth($colors,1)) == 'color') or (type-of($colors) == 'color'));
+}
+
+@function hasForeground($colors) {
+	@return (type-of($colors) == 'list' and length($colors) >= 2 and type-of(nth($colors,2)) == 'color');
+}
+
+@function hasBorderColor($colors) {
+	@return (type-of($colors) == 'list' and length($colors) >= 3 and type-of(nth($colors,3)) == 'color');
+}
+
+@function hasFillColor($colors) {
+	@return (type-of($colors) == 'list' and length($colors) >= 4 and type-of(nth($colors,4)) == 'color');
+}
+
+// Retrieval functions - retrieves the requested color setting from a list
+@function background($colors) {
+	@if hasBackground($colors) {
+		@if type-of($colors) == 'list' and length($colors) >= 1 {
+			@return nth($colors,1);
+		}
+		@else if type-of($colors) == 'color' {
+			@return $colors;
+		}
+	}
+	@else {
+		@error "background function: `#{$colors}` is not a valid $colors value for this function";
+		@return inherit;
+	}
+}
+
+@function foreground($colors) {
+	@if hasForeground($colors) {
+		@return nth($colors,2);
+	}
+	@else {
+		@error "foreground function: `#{$colors}` is not a valid $colors value for this function";
+		@return inherit;
+	}
+}
+
+@function borderColor($colors) {
+	@if hasBorderColor($colors) {
+		@return nth($colors,3);
+	}
+	@else {
+		@error "borderColor function: `#{$colors}` is not a valid $colors value for this function";
+		@return inherit;
+	}
+}
+
+@function fillColor($colors) {
+	@if hasFillColor($colors) {
+		@return nth($colors,4);
+	}
+	@else {
+		@error "fillColor function: `#{$colors}` is not a valid $colors value for this function";
+		@return initial;
+	}
+}
+
+// * https://hugogiraudel.com/2013/08/08/advanced-sass-list-functions/
+/**
+ * Last-index v2
+ * Less beautiful code
+ * Better performance
+ */
+// $list: a, b, c, d z, e, a, f;
+// $first-index: index($list, a); // 1
+// $last-index: last-index($list, a); // 6
+// $last-index: last-index($list, z); // null
+ @function last-index($list, $value) {
+  @for $i from length($list) *-1 through -1 {
+    @if nth($list, abs($i)) == $value {
+      @return abs($i);
+    }
+  }
+
+  @return null;
+}
+
+// Prepending value to list
+// $list: b, c, d, e, f;
+// $new-list: prepend($list, a); // a, b, c, d, e, f
+// $new-list: prepend(
+//   $list,
+//   now i know my a
+// ); // now, i, know, my, a, b, c, d, e, f
+@function prepend($list, $value) {
+  @return join($value, $list);
+}
+
+// Inserting value at index n
+// $list: a, b, d, e, f;
+// /* I want to add "c" as the 3rd index in the list */
+// $new-list: insert-nth($list, 3, c); // a, b, c, d, e, f
+// $new-list: insert-nth($list, -1, z); // error
+// $new-list: insert-nth($list, 0, z); // error
+// $new-list: insert-nth($list, 100, z); // error
+// $new-list: insert-nth($list, zog, z); // error
+@function insert-nth($list, $index, $value) {
+  $result: null;
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `insert-nth`.";
+  } @else if $index < 1 {
+    @warn "List index 0 must be a non-zero integer for `insert-nth`";
+  } @else if $index > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `insert-nth'.";
+  } @else {
+    $result: ();
+    @for $i from 1 through length($list) {
+      @if $i == $index {
+        $result: append($result, $value);
+      }
+
+      $result: append($result, nth($list, $i));
+    }
+  }
+  @return $result;
+}
+
+// Replacing values from list
+// $list: a, b, r, a, c a, d a, b, r, a;
+// $new-list: replace($list, a, u); // u, b, r, u, c a, d a, b, r, u;
+// $new-list: replace($list, a, u, true); // u, b, r, u, c u, d u, b, r, u;
+@function replace($list, $old-value, $new-value, $recursive: false) {
+  $result: ();
+
+  @for $i from 1 through length($list) {
+    @if type-of(nth($list, $i)) == list and $recursive {
+      $result: append(
+        $result,
+        replace(nth($list, $i), $old-value, $new-value, $recursive)
+      );
+    } @else {
+      @if nth($list, $i) == $old-value {
+        $result: append($result, $new-value);
+      } @else {
+        $result: append($result, nth($list, $i));
+      }
+    }
+  }
+
+  @return $result;
+}
+
+// replacing value at list
+// $list: a, b, z, d, e, f;
+// $new-list: replace-nth($list, 3, c); // a, b, c, d, e, f
+// $new-list: replace-nth($list, 0, c); // error
+// $new-list: replace-nth($list, -2, c); // a, b, c, d, z, f
+// $new-list: replace-nth($list, -10, c); // error
+// $new-list: replace-nth($list, 100, c); // error
+// $new-list: replace-nth($list, zog, c); // error
+@function replace-nth($list, $index, $value) {
+  $result: null;
+
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `replace-nth`.";
+  } @else if $index == 0 {
+    @warn "List index 0 must be a non-zero integer for `replace-nth`.";
+  } @else if abs($index) > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `replace-nth`.";
+  } @else {
+    $result: ();
+    $index: if($index < 0, length($list) + $index + 1, $index);
+
+    @for $i from 1 through length($list) {
+      @if $i == $index {
+        $result: append($result, $value);
+      } @else {
+        $result: append($result, nth($list, $i));
+      }
+    }
+  }
+  @return $result;
+}
+
+// Removing values from list
+// $list: a, b z, c, z, d, z, e, f;
+// $new-list: remove($list, z); // a, b z, c, d, e, f;
+// $new-list: remove($list, z, true); // a, b, c, d, e, f
+@function remove($list, $value, $recursive: false) {
+  $result: ();
+
+  @for $i from 1 through length($list) {
+    @if type-of(nth($list, $i)) == list and $recursive {
+      $result: append($result, remove(nth($list, $i), $value, $recursive));
+    } @else if nth($list, $i) != $value {
+      $result: append($result, nth($list, $i));
+    }
+  }
+
+  @return $result;
+}
+
+// removing value at index n
+// $list: a, b, z, c, d, e, f;
+// $new-list: remove-nth($list, 3); // a, b, c, d, e, f
+// $new-list: remove-nth($list, 0); // error
+// $new-list: remove-nth($list, -2); // a, b, z, c, d, f
+// $new-list: remove-nth($list, -10); // error
+// $new-list: remove-nth($list, 100); // error
+// $new-list: remove-nth($list, zog); // error
+@function remove-nth($list, $index) {
+  $result: null;
+
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `remove-nth`.";
+  } @else if $index == 0 {
+    @warn "List index 0 must be a non-zero integer for `remove-nth`.";
+  } @else if abs($index) > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `remove-nth`.";
+  } @else {
+    $result: ();
+    $index: if($index < 0, length($list) + $index + 1, $index);
+
+    @for $i from 1 through length($list) {
+      @if $i != $index {
+        $result: append($result, nth($list, $i));
+      }
+    }
+  }
+
+  @return $result;
+}
+
+// slicing a list
+// $list: a, b, c, d, e, f;
+// $new-list: slice($list, 3, 5); // c, d, e
+// $new-list: slice($list, 4, 4); // d
+// $new-list: slice($list, 5, 3); // error
+// $new-list: slice($list, -1, 10); // error
+@function slice($list, $start: 1, $end: length($list)) {
+  $result: null;
+
+  @if type-of($start) != number or type-of($end) != number {
+    @warn "Either $start or $end are not a number for `slice`.";
+  }
+  @else if $start > $end {
+    @warn "The start index has to be lesser than or equals to the end index for `slice`.";
+  }
+  @else if $start < 1 or $end < 1 {
+    @warn "List indexes must be non-zero integers for `slice`.";
+  }
+  @else if $start > length($list) {
+    @warn "List index is #{$start} but list is only #{length($list)} item long for `slice`.";
+  }
+  @else if $end > length($list) {
+    @warn "List index is #{$end} but list is only #{length($list)} item long for `slice`.";
+  }
+  @else {
+    $result: ();
+    @for $i from $start through $end {
+      $result: append($result, nth($list, $i));
+    }
+  }
+  @return $result;
+}
+
+// reverse a list
+// $list: a, b, c d e, f, g, h;
+// $new-list: reverse($list); // h, g, f, c d e, b, a
+// $new-list: reverse($list, true); // h, g, f, e d c, b, a
+@function reverse($list, $recursive: false) {
+  $result: ();
+  @for $i from length($list) *-1 through -1 {
+    @if type-of(nth($list, abs($i))) == list and $recursive {
+      $result: append($result, reverse(nth($list, abs($i)), $recursive));
+    } @else {
+      $result: append($result, nth($list, abs($i)));
+    }
+  }
+  @return $result;
+}
+
+// convert a list into a string
+// $list: a, b, c d e, f, g, h;
+// $new-list: to-string($list); // abcdefgh
+// $new-list: to-string($list, '-'); // a-b-c-d-e-f-g-h
+@function to-string($list, $glue: '', $is-nested: false) {
+  $result: null;
+  @for $i from 1 through length($list) {
+    $e: nth($list, $i);
+    @if type-of($e) == list {
+      $result: $result#{to-string($e, $glue, true)};
+    } @else {
+      $result: if(
+        $i != length($list) or $is-nested,
+        $result#{$e}#{$glue},
+        $result#{$e}
+      );
+    }
+  }
+
+  @return $result;
+}
+
+// shift indexes of a list
+// $list: a, b, c, d, e, f;
+// $new-list: loop($list, 1); // f, a, b, c, d, e
+// $new-list: loop($list, -3); // d, e, f, a, b, c
+@function loop($list, $value: 1) {
+  $result: ();
+  @for $i from 0 to length($list) {
+    $result: append($result, nth($list,  ($i - $value) % length($list) + 1));
+  }
+  @return $result;
+}
+
+
+
+/*
+ * https://gist.github.com/jonathantneal/a9b8901273475d261dd3
+ * http://alistapart.com/article/creating-intrinsic-ratios-for-video
+ *
+ */
+
+
+/* USAGE:
+
+.my-container {
+    @include fluid-aspect(16 9);
+}
+
+*/
+@mixin fluid-aspect($ratio: 1 1, $selector: "> :first-child") {
+  $selector: unquote($selector);
+
+  padding-bottom: percentage(nth($ratio, 2) / nth($ratio, 1));
+  position: relative;
+  overflow: hidden;
+
+  #{$selector} {
+    left: 0;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@mixin intrinsic-ratio($ratio: 1 1) {
+  padding-bottom: percentage(nth($ratio, 2) / nth($ratio, 1));
+  width: 100%;
+  display: block;
+}
+
+// based on https://gist.github.com/metaskills/3170386
+// Using this code below, I was able to itterate over a list of
+// color names and append them to an empty list. I was then able
+// to use the selectors from there.
+//
+// $selectors: ();
+// @each $value in $my-colors-names {
+//   $selector: unquote(".box.#{$value} .box-header");
+//   $selectors: append($selectors, $selector, comma);
+// }
+// #{$selectors} { @extend .color-white; }
+//
+// However, I would like to make a function that helps with this
+// task. Something like this below. The first problem is that I
+// need a way to evaluate the `$interpolation` during the each
+// block. I have not yet looked to see if there is a `sub()`
+// function or some way I can make that a template.
+//
+// @function map-to-selectors($list, $interpolation) {
+//   $selectors: ();
+//   @each $value in $list {
+//     $selector: unquote($interpolation);
+//     $selectors: append($selectors, $selector, comma);
+//   }
+//   @return $selectors
+// }
+//
+// $selectors: map-to-selectors($my-colors-names, ".box.#{$value} .box-header");
+//
+// Thoughts? Better ways to use this along side the additional
+// functions provided by Compass? A way to lazy eval the template?
+//
+@function map-to-selectors($list, $interpolation) {
+  $selectors: ();
+  @each $value in $list {
+    $selector: unquote($interpolation);
+    $selectors: append($selectors, $selector, comma);
+  }
+  @return $selectors;
+}
+
+// https://gist.github.com/danro/3686771
+@mixin hover-active {
+  &:hover, &.hover {
+    @content;
+    // .no-touch & {
+    // }
+  }
+  &:active, &.active {
+    @content;
+    // .touch & {
+    // }
+  }
+}
+@mixin hover-active-class {
+  &.hover {
+    @content;
+    // .no-touch & {
+    // }
+  }
+  &.active {
+    @content;
+    // .touch & {
+    // }
+  }
+}
