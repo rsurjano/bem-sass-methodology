@@ -2,4 +2,11 @@ $componentClass: "banner";
 $prefix: $componentClass;
 
 @include new($componentClass) {
+  font-size: 1.6rem;
+  z-index: $banner-base-z-index;
+  margin-bottom: 10px;
+
+  @include has($prefix, $e: "inner") {
+    position: relative;
+  }
 }
