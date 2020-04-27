@@ -2,4 +2,71 @@ $componentClass: "bannerText";
 $prefix: $componentClass;
 
 @include new($componentClass) {
+  font-size: 1.6rem;
+  z-index: $banner-base-z-index;
+  text-align: center;
+
+  @include screen-sm {
+    text-align: auto;
+  }
+
+  @include has($prefix, $e: "bottom") {
+    padding: 20px 34px;
+    text-align: center;
+    @include screen-sm() {
+      padding: 0;
+      text-align: inherit;
+    }
+  }
+
+  @include has($prefix, $e: "bg") {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+  }
+
+  @include new($prefix, $v: "vertical-top") {
+    @include screen-sm {
+      top: 0;
+    }
+  }
+
+  @include new($prefix, $v: "vertical-center") {
+    @include screen-sm {
+      top: 50%;
+      transform: translateY(-50%);
+      &.pg-flexibleBannerText--horizontal-center {
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  @include new($prefix, $v: "vertical-bottom") {
+    @include screen-sm {
+      bottom: 0;
+    }
+  }
+
+  @include new($prefix, $v: "horizontal-left") {
+    @include screen-sm {
+      left: 0;
+    }
+  }
+
+  @include new($prefix, $v: "horizontal-center") {
+    @include screen-sm {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  @include new($prefix, $v: "horizontal-right") {
+    @include screen-sm {
+      right: 0;
+      left: auto;
+    }
+  }
 }

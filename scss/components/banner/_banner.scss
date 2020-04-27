@@ -69,4 +69,65 @@ $prefix: $componentClass;
       }
     }
   }
+
+  @include has($prefix, "media") {
+    overflow: hidden;
+    position: relative;
+    display: block;
+    width: 100%;
+    &:before {
+      @include screen-md {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-top: 48%;
+      }
+    }
+    & > *:last-child:not(:first-child) {
+      display: none;
+      @include screen-sm {
+        display: block;
+      }
+    }
+
+    @include state("hoverable") {
+      @include has($prefix, "mediaContainer", $m: "video", $nested: true) {
+        z-index: -1;
+      }
+      @include screen-sm {
+        cursor: pointer;
+        &:hover {
+          & > *:first-child {
+            opacity: 0;
+          }
+          & > *:last-child {
+            opacity: 1;
+          }
+        }
+        & > *:last-child {
+          opacity: 0;
+        }
+        & > * {
+          transition: opacity 0.25s ease-in-out;
+        }
+      }
+    }
+  }
+
+  @include has($prefix, "mediaContainer", $m: "image", $nested: true) {
+    height: auto;
+    width: 100%;
+    @include screen-sm {
+      width: 100%;
+    }
+
+    @include screen-md {
+      position: absolute;
+      top: 0;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      width: 100%;
+    }
+  }
 }
